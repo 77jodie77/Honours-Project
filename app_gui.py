@@ -232,19 +232,25 @@ class Composition_Page(Page):
         save_name = tk.filedialog.asksaveasfilename(defaultextension=".png", filetypes=(("png", "*.png"),("pdf", "*.pdf")))
         if save_name:
             self.canvas.yview_moveto(0)
-            title = self.title["text"]
-            comp = self.comp["text"]
-            tempo = self.tempo["text"]
-            self.comp["text"]=""
-            self.title["text"]=""
-            self.tempo["text"]=""
+            if hasattr(self, 'title'):
+                title = self.title["text"]
+                self.title["text"] = ""
+            if hasattr(self, 'comp'):
+                comp = self.comp["text"]
+                self.comp["text"]=""
+            if hasattr(self, 'tempo'):
+                tempo = self.tempo["text"]
+                self.tempo["text"] = ""
+
+
+
             file_name, ext = os.path.splitext(save_name)
             self.canvas.postscript(file=file_name + ".eps", height=2050)  # save canvas as encapsulated postscript
             img = Image.open(file_name + ".eps")
             img.save(save_name, ext.lower()[1:], quality=99)
-            self.title["text"]=title
-            self.comp["text"] = comp
-            self.tempo["text"] = tempo
+            if 'title' in locals(): self.title["text"]=title
+            if 'comp' in locals(): self.comp["text"] = comp
+            if 'tempo' in locals(): self.tempo["text"] = tempo
 
     # Asks for an audio file and calls a function to get the notes. It only calls the function
     # if the filename is not empty
